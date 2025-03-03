@@ -13,7 +13,7 @@ def safe_eval(expr, x, y=0):
         f = sp.sympify(expr)
         return float(f.evalf(subs={x_sym: x, y_sym: y}))
     except Exception as e:
-        messagebox.showerror("Error", f"Invalid ecuacion: {e}")
+        messagebox.showerror("Error", f"Ecuacion invalida: {e}")
         return None
 
 def safe_eval_raphson(ecuacion,x):
@@ -124,29 +124,33 @@ def display_table(resultados, titulo):
 
 
 def run_metodo(metodo):
-    if metodo == "Euler Mejorado":
-        ecuacion = ecuacion_input.get()
-        x0 = float(x0_input.get())
-        y0 = float(y0_input.get())
-        xn = float(xn_input.get())
-        h = float(h_input.get())
-        resultados = euler_mejorado(ecuacion, x0, y0, xn, h)
-        display_table(resultados, "Metodo Euler Mejorado")
+    try:
+        if metodo == "Euler Mejorado":
+            ecuacion = ecuacion_input.get()
+            x0 = float(x0_input.get())
+            y0 = float(y0_input.get())
+            xn = float(xn_input.get())
+            h = float(h_input.get())
+            resultados = euler_mejorado(ecuacion, x0, y0, xn, h)
+            display_table(resultados, "Metodo Euler Mejorado")
 
-    elif metodo == "Runge-Kutta":
-        ecuacion = ecuacion_input.get()
-        x0 = float(x0_input.get())
-        y0 = float(y0_input.get())
-        xn = float(xn_input.get())
-        h = float(h_input.get())
-        resultados = runge_kutta(ecuacion, x0, y0, xn, h)
-        display_table(resultados, "Metodo Runge-Kutta (4th Orden)")
+        elif metodo == "Runge-Kutta":
+            ecuacion = ecuacion_input.get()
+            x0 = float(x0_input.get())
+            y0 = float(y0_input.get())
+            xn = float(xn_input.get())
+            h = float(h_input.get())
+            resultados = runge_kutta(ecuacion, x0, y0, xn, h)
+            display_table(resultados, "Metodo Runge-Kutta (4th Orden)")
 
-    elif metodo == "Newton-Raphson":
-        ecuacion = ecuacion_input.get()
-        x0 = float(x0_input.get())
-        resultados = newton_raphson(ecuacion, x0)
-        display_table(resultados, "Metodo Newton-Raphson")
+        elif metodo == "Newton-Raphson":
+            ecuacion = ecuacion_input.get()
+            x0 = float(x0_input.get())
+            resultados = newton_raphson(ecuacion, x0)
+            display_table(resultados, "Metodo Newton-Raphson")
+    except Exception as e:
+        messagebox.showerror("Error", f"Salio un error: {e}")
+        return None
 
 
 window = tk.Tk()
