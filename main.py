@@ -42,17 +42,17 @@ def euler_mejorado(ecuacion, x0, y0, xn, h):
     x, y = x0, y0
     resultados = []
     n = 0
-    tolerance = 1e-9
-    while x <= xn + tolerance:
+    tolerancia = 1e-9
+    while x <= xn + tolerancia:
         fxy = safe_eval(ecuacion, x, y) 
-        y_predict = y + h * fxy
-        fxy_predict = safe_eval(ecuacion, x + h, y_predict)
-        y_new = y + h / 2 * (fxy + fxy_predict)
-        x_new = x + h
+        y_p = y + h * fxy
+        fxy_p = safe_eval(ecuacion, x + h, y_p)
+        y_nuevo = y + h / 2 * (fxy + fxy_p)
+        x_nuevo = x + h
 
-        resultados.append((n, x, y, y_predict, x_new, y_new))
+        resultados.append((n, x, y, y_p, x_nuevo, y_nuevo))
 
-        x, y = x_new, y_new
+        x, y = x_nuevo, y_nuevo
         n += 1
     return resultados
 
@@ -60,8 +60,8 @@ def runge_kutta(ecuacion, x0, y0, xn, h):
     x, y = x0, y0
     resultados = []
     n = 0
-    tolerance = 1e-9
-    while x <= xn + tolerance:
+    tolerancia = 1e-9
+    while x <= xn + tolerancia:
         k1 = safe_eval(ecuacion, x, y)
         k2 = safe_eval(ecuacion, x + (h / 2), y + (h*k1 / 2))
         k3 = safe_eval(ecuacion, x + (h / 2), y + (h*k2 / 2))
@@ -74,9 +74,9 @@ def runge_kutta(ecuacion, x0, y0, xn, h):
         n += 1
     return resultados
 
-def newton_raphson(ecuacion, x0):
+def newton_raphson(ecuacion, x0, tole):
         x = x0
-        tolerance = 1e-6
+        tolerancia = tole
         max_iterations = 100
         resultados = []
         n = 0
@@ -88,13 +88,13 @@ def newton_raphson(ecuacion, x0):
                 messagebox.showerror("Error", "Derivada es 0")
                 return
             
-            xn_new = x - f_val / f_prime_val
+            xn_nuevo = x - f_val / f_prime_val
             
-            resultados.append((n, x, f_val, f_prime_val, xn_new))
+            resultados.append((n, x, f_val, f_prime_val, xn_nuevo))
             
-            if abs(xn_new - x) < tolerance:
+            if abs(xn_nuevo - x) < tolerancia:
                 break
-            x = xn_new
+            x = xn_nuevo
             n +=1
         return resultados
 
@@ -146,7 +146,8 @@ def run_metodo(metodo):
         elif metodo == "Newton-Raphson":
             ecuacion = ecuacion_input.get()
             x0 = float(x0_input.get())
-            resultados = newton_raphson(ecuacion, x0)
+            tole = float(tolerancia_input.get())
+            resultados = newton_raphson(ecuacion, x0, tole)
             display_table(resultados, "Metodo Newton-Raphson")
     except Exception as e:
         messagebox.showerror("Error", f"Salio un error: {e}")
@@ -154,7 +155,7 @@ def run_metodo(metodo):
 
 
 window = tk.Tk()
-window.titulo("Metodos de Ecuaciones Unidad III")
+window.title("Metodos de Ecuaciones Unidad III")
 window.geometry("1200x600")
 
 lado_izq = tk.Frame(window, padx=20, pady=20, relief=tk.RIDGE, borderwidth=2)
@@ -164,7 +165,7 @@ tk.Label(lado_izq, text="Ecuacion diferencial (dy/dx):", font=("Arial", 12)).pac
 ecuacion_input = tk.Entry(lado_izq, width=40, font=("Arial", 10))
 ecuacion_input.pack(pady=5)
 
-for label, var in [("x0:", "x0_input"), ("y0:", "y0_input"),("xn:", "xn_input"), ("h:", "h_input")]:
+for label, var in [("x0:", "x0_input"), ("y0:", "y0_input"),("xn:", "xn_input"), ("h:", "h_input"),("Tole:", "tolerancia_input")]:
     tk.Label(lado_izq, text=label, font=("Arial", 12)).pack(anchor="w")
     input = tk.Entry(lado_izq, width=10, font=("Arial", 10))
     input.pack(pady=5)
